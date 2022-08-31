@@ -3,17 +3,12 @@ import sympy
 from Crypto.Util.number import isPrime
 import math
 from functools import reduce
-# idea per calcolare Sa:
-# creare una lista di numeri da 1 a n
-# calcolare i quadrati della lista
-# per ciascun p primo < 4a
-# calcolare i quadrati mod p di ciascun elemento della lista di quadrati
-# se almeno un elemento è uguale ad a mod p allora p è residuo di a
+
 def factorize(n):
     factors = []
     p = 2
     while True:
-        while n % p == 0 and n > 0:  # while we can divide by smaller number, do so
+        while n % p == 0 and n > 0:  
             factors.append(p)
             n = n / p
         p = p+1
@@ -95,7 +90,6 @@ def intersection(lst1, lst2):
         flag = False
     return lst3
 
-# usa la intersect di set
 def miller_rabin_check(n, bases):
     # scrivo n come n = 2^e *d +1 per qualche d dispari
     e = 1
@@ -122,8 +116,6 @@ def miller_rabin_check(n, bases):
             break
     return primeflag
 
-
-# residui is a dictionary
 # k is the list containing ki values
 def generate_pprimes(bases, maxiter, h):
     # contains the sets that must be intersected to choose p1
@@ -137,7 +129,6 @@ def generate_pprimes(bases, maxiter, h):
     for a in bases:
         modules.append(4 * a)
 
-    # i residui sono giusti
     residui = dict()
     for i in range(len(bases)):
         residui[bases[i]] = list()
@@ -194,8 +185,7 @@ def generate_pprimes(bases, maxiter, h):
                 otherk=True
             else:
                 final_set.append(intersect)
-        # fare delle funzioni
-        # print(final_set)
+        
         if otherk == False:
             # scelgo un rappresentante da sets per ogni elemento di bases, ovvero scelgo a caso un numero per ogni lista appartenente a sets
             # applico il CRT (Chinese Reminder Theorem) con [za1, za2,...,zat] e [4*a1,4*a2,...,4*at] per trovare un candidato
@@ -210,14 +200,10 @@ def generate_pprimes(bases, maxiter, h):
                 flag = True
                 res = None
                 iterazioni = 1
-                # print(final_set)
+                
                 while res is None and iterazioni < maxiter:
                     for j in range(len(bases)):
                         z[j] = random.choice(final_set[j])
-                        # while z[j]%4 != 3:
-                        #     z[j] = random.choice(final_set[j])
-                    # print([x%4 for x in z])
-
                     z[j+1] = k[1]-pow(k[2],-1,k[1])
                     z[j+2] = k[2]-pow(k[1],-1,k[2])
                     crt_res = crt(z, list([m//4 for m in modules] + k[1:]))
@@ -249,7 +235,7 @@ def generate_pprimes(bases, maxiter, h):
                         n = 1
                         for m in range(len(k)):
                             n = n * p[m]
-                        # occorre controllare che n sia uno pseudoprime wrt le bases scelte con il test di Miller-Rabin
+                        # occorre controllare che n sia uno pseudoprime wrt le basi scelte con il test di Miller-Rabin
                         f = miller_rabin_check(n, bases)
                         if not f:
                             flag = False
